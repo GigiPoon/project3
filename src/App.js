@@ -1,11 +1,14 @@
 
 import firebase from "./firebase";
 import axios from 'axios';
+import React from 'react';
+import './App.css';
 
 // import ApiCall from "./ApiCall";
 import { useEffect, useState } from 'react';
 // to access our database, we must import the corresponding firebase modules
 import { getDatabase, ref, onValue, push, remove } from 'firebase/database'
+import { isCompositeComponent } from "react-dom/test-utils";
 
 const App = () => {
 
@@ -22,8 +25,8 @@ const App = () => {
     console.log(userSubmit)
     axios({
       headers: {
-        "x-app-id": 
-        "x-app-key": 
+        "x-app-id": "3ab71f34",  
+        "x-app-key": "a9702f60c91b02c4d5e4501e4dede988", 
         "Content-Type": "application/json",
       },
       method: "GET",
@@ -37,8 +40,9 @@ const App = () => {
       return axios({
         headers: {
           "Content-Type": "application/json",
-          "x-app-id": 
-          "x-app-key": 
+          "x-app-id": "3ab71f34", 
+          "x-app-key": "a9702f60c91b02c4d5e4501e4dede988",
+        },
         data: {
           query: response.data.common[0].food_name,
         },
@@ -47,6 +51,7 @@ const App = () => {
         dataResponse: "json",
       });
     })
+  
       .then((response) => {
         // Set response to state with nutrients data
         console.log(response)
@@ -77,12 +82,16 @@ const App = () => {
 
       // here we store the response from our query to Firebase inside of a variable called data.
       // .val() is a Firebase method that gets us the information we want
+      console.log("response.val", response.val())
       const data = response.val();
+
       // data is an object, so we iterate through it using a for in loop to access each list name 
 
       for (let key in data) {
-        newState.push({ key: key, name: data[key] });
+        newState.push({ key: key, name: data[key], data: nutritionData});
       }
+
+      console.log("data", data)
 
       // then, we call setEntryList in order to update our component's state using the local array newState
       newState.reverse();
@@ -95,8 +104,8 @@ const App = () => {
     // we're telling React to update the state of our `App` component to be 
     // equal to whatever is currently the value of the input field
     setUserInput(event.target.value)
-    console.log(event.target.value)
-    console.log(userInput)
+    console.log("setuserinput", setUserInput(event.target.value))
+    console.log("userinput", userInput)
   }
 
   const handleSubmit = (event) => {
