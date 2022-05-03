@@ -39,9 +39,9 @@ const App = () => {
         const commonArray = response.data.common
         setcommonArray(commonArray)
         console.log("commonArray", commonArray)
-      if (commonArray != response) {
-        throw Error ('no data found')
-      }
+      // if (commonArray !== response) {
+      //   throw Error ('no data found')
+      // }
         // console.log("commonarray", commonArray)
         return axios({
           headers: {
@@ -60,7 +60,7 @@ const App = () => {
           // Set response to state with nutrients data
           const foodObject = response.data.foods
           setNutritionData(foodObject)
-          console.log("nutritionData", nutritionData)
+
           saveItemToDatabase(foodObject)
           // console.log(foodObject)
           // console.log("nutrition data", nutritionData)
