@@ -75,36 +75,27 @@ const App = () => {
 
   }, [userSubmit])
 
-  useEffect
-
-  const saveItemToDatabase = (item) => {
-    // create a variable that holds our database details
+  useEffect(() => {
     const database = getDatabase(firebase)
 
     // we then create a variable that makes reference to our database
     const dbRef = ref(database)
-
-    const newObject = {
-      photo: {
-        thumb: item[0].photo.thumb
-      },
-      food_name: item[0].food_name, 
-      nf_calories: item[0].nf_calories, 
-      nf_total_carbohydrate: item[0].nf_total_carbohydrate,
-      nf_protein: item[0].nf_protein,
-      nf_dietary_fiber: item[0].nf_dietary_fiber,
-
-    }
-
-    push(dbRef, newObject)
-
-
+    
     // add an event listener to that variable that will fire
     // from the database, and call that data 'response'.
-    // onValue(dbRef, (response) => {
+    onValue(dbRef, (response) => {
     //   // here we use Firebase's .val() method to parse our database info the way we want it
-    //   console.log(response.val())
-    //   const newState = [];
+      const newState = [];
+      const data = response.val();
+      console.log("data", data)
+
+      for (let key in data) {
+        newState.push({key: key, name: data[key]});
+    }
+    setEntryList(newState);
+    console.log("newState", newState)
+
+    })
 
     //   // here we store the response from our query to Firebase inside of a variable called data.
     //   // .val() is a Firebase method that gets us the information we want
@@ -125,6 +116,31 @@ const App = () => {
     //   setEntryList(newState);
     //   // console.log("entry list", entryList)
     // });
+  }, [])
+
+  const saveItemToDatabase = (item) => {
+    // create a variable that holds our database details
+    const database = getDatabase(firebase)
+
+    // we then create a variable that makes reference to our database
+    const dbRef = ref(database)
+    console.log("item", item)
+    const newObject = {
+      photo: {
+        thumb: item[0].photo.thumb
+      },
+      food_name: item[0].food_name, 
+      nf_calories: item[0].nf_calories, 
+      nf_total_carbohydrate: item[0].nf_total_carbohydrate,
+      nf_protein: item[0].nf_protein,
+      nf_dietary_fiber: item[0].nf_dietary_fiber,
+      tags: {
+        tag_id: item[0].tags.tag_id
+      }
+    }
+
+    push(dbRef, newObject)
+
   }
 
 
@@ -156,11 +172,11 @@ const App = () => {
   const handleRemoveBook = (entryListId) => {
     //   // here we create a reference to the database 
     //   // this time though, instead of pointing at the whole database, we make our dbRef point to the specific node of the list we want to remove
-    // const database = getDatabase(firebase);
-    // const dbRef = ref(database, `/${entryListId}`);
+    const database = getDatabase(firebase);
+    const dbRef = ref(database, `/${entryListId}`);
 
     // //   // using the Firebase method remove(), we remove the node specific to the list ID
-    // remove(dbRef)
+    remove(dbRef)
   }
   // const { food_name, nf_calories, nf_total_carbohydrate, nf_protein, nf_dietary_fiber, serving_qty, serving_unit, photo } = nutritionData
 
@@ -192,20 +208,19 @@ const App = () => {
             <p>Dietary Fiber: {nf_dietary_fiber}</p>
           </li>
         </ul> */}
-        <ul>
+        <ul className="menu">
 
           {nutritionData.map((food) => {
             return (
               <li key={commonArray[0].tag_id}>
                 <img src={food.photo.thumb} />
 
-                <p>{food.food_name}</p>
+                <h2>{food.food_name}</h2>
                 <p>Calories: {food.nf_calories}</p>
                 <p>Carbohydrates: {food.nf_total_carbohydrate}</p>
                 <p>Protein: {food.nf_protein}</p>
                 <p>Dietary Fiber: {food.nf_dietary_fiber}</p>
 
-                <button onClick={() => handleRemoveBook(food.key)}> Remove </button>
               </li>
             )
           })}
@@ -223,8 +238,26 @@ const App = () => {
         />
 
         <button>Add</button>
-      </form>
 
+      </form>
+      <ul className="storedInfo">
+
+        {entryList.map((food) => {
+          return (
+            <li key={food.name.key} className="storedList">
+              <img src={food.name.photo.thumb} />
+
+              <h2>{food.name.food_name}</h2>
+              <p>Calories: {food.name.nf_calories}</p>
+              <p>Carbohydrates: {food.name.nf_total_carbohydrate}</p>
+              <p>Protein: {food.name.nf_protein}</p>
+              <p>Dietary Fiber: {food.name.nf_dietary_fiber}</p>
+
+              <button onClick={() => handleRemoveBook(food.key)} className="removeButton" > Remove </button>
+            </li>
+          )
+        })}
+      </ul>
     </div>
   );
 };

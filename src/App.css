@@ -13,6 +13,11 @@ body {
   background-image: linear-gradient(to right, rgb(92, 122, 102), rgb(180, 184, 127));
 }
 
+.app {
+  width: 90%;
+  margin: 0 auto;
+}
+
 h1 {
   text-align: center;
   font-size: 4rem;
@@ -52,10 +57,16 @@ button:hover {
   color: rgb(180, 184, 127);
   cursor: pointer;
   border: 2px solid rgb(180, 184, 127);
-
 }
 
-ul {
+.button:focus {
+  background-color: white;
+  color: rgb(180, 184, 127);
+  cursor: pointer;
+  border: 2px solid rgb(180, 184, 127);
+}
+
+.menu {
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
@@ -87,7 +98,7 @@ p {
   justify-content: center;
   padding: 20px 0;
   text-align: center;
-  border: 2px solid white;
+  /* border: 2px solid white; */
   width: 55%;
   margin: 0 auto;
 }
@@ -96,6 +107,22 @@ p {
   padding: 0 20px;
 }
 
-li.button {
-  margin: 0 auto;
+.storedInfo {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+
+}
+
+.storedList {
+  padding: 20px;
+  border: 2px solid white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 20px;
+}
+
+.removeButton {
+  margin: 20px;
 }
