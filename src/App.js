@@ -4,11 +4,9 @@ import axios from 'axios';
 import React from 'react';
 import './App.css';
 
-// import ApiCall from "./ApiCall";
 import { useEffect, useState } from 'react';
 // to access our database, we must import the corresponding firebase modules
 import { getDatabase, ref, onValue, push, remove } from 'firebase/database'
-import { isCompositeComponent } from "react-dom/test-utils";
 
 const App = () => {
 
@@ -21,44 +19,43 @@ const App = () => {
 
 
   useEffect(() => {
-    console.log(userInput)
-    console.log(userSubmit)
+    console.log("userInput", userInput)
+    console.log("userSubmit", userSubmit)
     axios({
       headers: {
         "x-app-id": "3ab71f34",  
         "x-app-key": "a9702f60c91b02c4d5e4501e4dede988", 
         "Content-Type": "application/json",
       },
-      method: "GET",
       url: `https://trackapi.nutritionix.com/v2/search/instant`,
       dataResponse: "json",
       params: {
         query: userSubmit,
       },
     }).then(response => {
-      console.log(response.data.common[0])
+      const commonArray = response.data.common[0]
+      setUserInput(commonArray)
+      console.log("commonarray", commonArray)
       return axios({
         headers: {
           "Content-Type": "application/json",
           "x-app-id": "3ab71f34", 
           "x-app-key": "a9702f60c91b02c4d5e4501e4dede988",
         },
-        data: {
-          query: response.data.common[0].food_name,
-        },
         method: "POST",
         url: `https://trackapi.nutritionix.com/v2/natural/nutrients`,
         dataResponse: "json",
+        data: {
+          query: commonArray.food_name,
+        },
       });
     })
   
       .then((response) => {
         // Set response to state with nutrients data
-        console.log(response)
-        setUserInput(response.data.foods[0]);
-        const calories = response.data.foods[0].nf_calories;
-        console.log(calories)
-        setNutritionData(response.data.foods[0])
+        const foodObject = response.data.foods[0]
+        setNutritionData(foodObject)
+        console.log("foodObject", foodObject)
 
       })
 
@@ -82,7 +79,6 @@ const App = () => {
 
       // here we store the response from our query to Firebase inside of a variable called data.
       // .val() is a Firebase method that gets us the information we want
-      console.log("response.val", response.val())
       const data = response.val();
 
       // data is an object, so we iterate through it using a for in loop to access each list name 
@@ -97,29 +93,34 @@ const App = () => {
       newState.reverse();
       setEntryList(newState);
     });
-  }, []);
+  }, [nutritionData]);
 
   // this event will fire every time there is a change in the input it is attached to
   const handleInputChange = (event) => {
     // we're telling React to update the state of our `App` component to be 
     // equal to whatever is currently the value of the input field
+
+    //what we are typing in the search bar "every letter"
     setUserInput(event.target.value)
-    console.log("setuserinput", setUserInput(event.target.value))
-    console.log("userinput", userInput)
+
   }
 
   const handleSubmit = (event) => {
     // event.preventDefault prevents the default action (form submission and page refresh)
     event.preventDefault();
 
+    //usersubmit = to the value of userinput after hitting submit
     setUserSubmit(userInput)
+    console.log("userInput", userInput)
+
 
     // create a reference to our database
     const database = getDatabase(firebase);
     const dbRef = ref(database);
 
     // push the value of the `userInput` state to the database
-    push(dbRef, userInput);
+    push(dbRef, nutritionData);
+    
 
     // reset the state to an empty string
     setUserInput('');
@@ -143,13 +144,15 @@ const App = () => {
         {entryList.map((entryList) => {
           return (
             <li key={entryList.key}>
-              <p>{entryList.name} - {entryList.key}</p>
+
+              <p>{entryList.name} - {entryList.key} - {entryList.data.food_name} </p>
+
               <button onClick={() => handleRemoveBook(entryList.key)}> Remove </button>
             </li>
           )
         })}
       </ul>
-
+      {/* attach the `handleSubmit` function to our input form */}
       <form onSubmit={handleSubmit}>
         <label htmlFor="newSearch">What would you like to eat?</label>
         <input
@@ -160,7 +163,6 @@ const App = () => {
           placeholder="apple"
         />
 
-        {/* attach the `handleSubmit` function to our input button */}
         <button>Add</button>
       </form>
 
