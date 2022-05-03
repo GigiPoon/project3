@@ -31,29 +31,22 @@ const App = () => {
       headers: {
         "x-app-id": "efa6fcf2",  
         "x-app-key": "c9308f08fd426ae3397daf9a5747f3e9", 
-        "Content-Type": "application/json",
       },
       url: `https://trackapi.nutritionix.com/v2/search/instant`,
-      dataResponse: "json",
       params: {
         query: userSubmit,
       },
     }).then(response => {
-
       const commonArray = response.data.common[0]
       setcommonArray(commonArray)
-      
       console.log("commonarray", commonArray)
-
       return axios({
         headers: {
-          "Content-Type": "application/json",
           "x-app-id": "efa6fcf2", 
           "x-app-key": "c9308f08fd426ae3397daf9a5747f3e9",
         },
         method: "POST",
         url: `https://trackapi.nutritionix.com/v2/natural/nutrients`,
-        dataResponse: "json",
         data: {
           query: commonArray.food_name,
         },
@@ -137,29 +130,28 @@ const App = () => {
 
 
   // // this function takes an argument, which is the ID of the list we want to remove
-  // const handleRemoveBook = (entryListId) => {
+  const handleRemoveBook = (entryListId) => {
   //   // here we create a reference to the database 
   //   // this time though, instead of pointing at the whole database, we make our dbRef point to the specific node of the list we want to remove
-  //   const database = getDatabase(firebase);
-  //   const dbRef = ref(database, `/${entryListId}`);
+    const database = getDatabase(firebase);
+    const dbRef = ref(database, `/${entryListId}`);
 
   //   // using the Firebase method remove(), we remove the node specific to the list ID
-  //   remove(dbRef)
-  // }
-  const { food_name, nf_calories, nf_total_carbohydrate, nf_protein, nf_dietary_fiber, photo} = nutritionData
+    remove(dbRef)
+  }
+  const { food_name, nf_calories, nf_total_carbohydrate, nf_protein, nf_dietary_fiber, serving_qty, serving_unit, photo} = nutritionData
 
-  const { serving_qty, serving_unit } = commonArray
 
   console.log("entryList", entryList)
 
   return (
     <div className="app">
       <h1>Food List</h1>
-      <h2>{food_name}</h2>
       <div className="wrapper">
-        <div className="picture">
+        <h2>{food_name}</h2>
+        {/* <div className="picture">
           <img src={photo.thumb} />
-        </div>
+        </div> */}
         <ul>
           <li>
             <p>{serving_unit} ({serving_qty})</p>
@@ -194,7 +186,7 @@ const App = () => {
       </ul> */}
       {/* attach the `handleSubmit` function to our input form */}
       <form onSubmit={handleSubmit}>
-        <label htmlFor="newSearch">What would you like to eat?</label>
+        <label htmlFor="newSearch"></label>
         <input
           type="text"
           id="newSearch"
