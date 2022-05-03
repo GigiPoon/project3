@@ -39,6 +39,9 @@ const App = () => {
         const commonArray = response.data.common
         setcommonArray(commonArray)
         console.log("commonArray", commonArray)
+      if (commonArray != response) {
+        throw Error ('no data found')
+      }
         // console.log("commonarray", commonArray)
         return axios({
           headers: {
@@ -134,6 +137,7 @@ const App = () => {
       nf_total_carbohydrate: item[0].nf_total_carbohydrate,
       nf_protein: item[0].nf_protein,
       nf_dietary_fiber: item[0].nf_dietary_fiber,
+      serving_unit: item[0].serving_unit,
       tags: {
         tag_id: item[0].tags.tag_id
       }
@@ -213,7 +217,10 @@ const App = () => {
           {nutritionData.map((food) => {
             return (
               <li key={commonArray[0].tag_id}>
-                <img src={food.photo.thumb} />
+                <img 
+                src={food.photo.thumb}
+                alt={food.serving_unit}
+                />
 
                 <h2>{food.food_name}</h2>
                 <p>Calories: {food.nf_calories}</p>
@@ -244,8 +251,10 @@ const App = () => {
 
         {entryList.map((food) => {
           return (
-            <li key={food.name.key} className="storedList">
-              <img src={food.name.photo.thumb} />
+            <li key={food.key} className="storedList">
+              <img 
+              src={food.name.photo.thumb}
+              alt={food.name.serving_unit} />
 
               <h2>{food.name.food_name}</h2>
               <p>Calories: {food.name.nf_calories}</p>
