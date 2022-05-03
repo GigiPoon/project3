@@ -8,14 +8,20 @@ import { useEffect, useState } from 'react';
 // to access our database, we must import the corresponding firebase modules
 import { getDatabase, ref, onValue, push, remove } from 'firebase/database'
 
+
+//3fd684dd
+//da1f41a37b4009e916aee78562f757df
+
+
+
 const App = () => {
 
 
   const [userInput, setUserInput] = useState('');
   const [entryList, setEntryList] = useState([]);
   const [userSubmit, setUserSubmit] = useState('');
+  const [commonArray, setcommonArray] = useState({});
   const [nutritionData, setNutritionData] = useState({});
-
 
 
   useEffect(() => {
@@ -23,8 +29,8 @@ const App = () => {
     console.log("userSubmit", userSubmit)
     axios({
       headers: {
-        "x-app-id": "3ab71f34",  
-        "x-app-key": "a9702f60c91b02c4d5e4501e4dede988", 
+        "x-app-id": "efa6fcf2",  
+        "x-app-key": "c9308f08fd426ae3397daf9a5747f3e9", 
         "Content-Type": "application/json",
       },
       url: `https://trackapi.nutritionix.com/v2/search/instant`,
@@ -33,14 +39,17 @@ const App = () => {
         query: userSubmit,
       },
     }).then(response => {
+
       const commonArray = response.data.common[0]
-      setUserInput(commonArray)
+      setcommonArray(commonArray)
+      
       console.log("commonarray", commonArray)
+
       return axios({
         headers: {
           "Content-Type": "application/json",
-          "x-app-id": "3ab71f34", 
-          "x-app-key": "a9702f60c91b02c4d5e4501e4dede988",
+          "x-app-id": "efa6fcf2", 
+          "x-app-key": "c9308f08fd426ae3397daf9a5747f3e9",
         },
         method: "POST",
         url: `https://trackapi.nutritionix.com/v2/natural/nutrients`,
@@ -84,7 +93,8 @@ const App = () => {
       // data is an object, so we iterate through it using a for in loop to access each list name 
 
       for (let key in data) {
-        newState.push({ key: key, name: data[key], data: nutritionData});
+
+        newState.push({ key: key, name: data[key]});
       }
 
       console.log("data", data)
@@ -95,12 +105,12 @@ const App = () => {
     });
   }, [nutritionData]);
 
-  // this event will fire every time there is a change in the input it is attached to
+  // // this event will fire every time there is a change in the input it is attached to
   const handleInputChange = (event) => {
-    // we're telling React to update the state of our `App` component to be 
-    // equal to whatever is currently the value of the input field
+  //   // we're telling React to update the state of our `App` component to be 
+  //   // equal to whatever is currently the value of the input field
 
-    //what we are typing in the search bar "every letter"
+  //   //what we are typing in the search bar "every letter"
     setUserInput(event.target.value)
 
   }
@@ -109,10 +119,9 @@ const App = () => {
     // event.preventDefault prevents the default action (form submission and page refresh)
     event.preventDefault();
 
-    //usersubmit = to the value of userinput after hitting submit
+  //   //usersubmit = to the value of userinput after hitting submit
     setUserSubmit(userInput)
     console.log("userInput", userInput)
-
 
     // create a reference to our database
     const database = getDatabase(firebase);
@@ -122,25 +131,56 @@ const App = () => {
     push(dbRef, nutritionData);
     
 
-    // reset the state to an empty string
+  //   // reset the state to an empty string
     setUserInput('');
   }
 
 
-  // this function takes an argument, which is the ID of the list we want to remove
-  const handleRemoveBook = (entryListId) => {
-    // here we create a reference to the database 
-    // this time though, instead of pointing at the whole database, we make our dbRef point to the specific node of the list we want to remove
-    const database = getDatabase(firebase);
-    const dbRef = ref(database, `/${entryListId}`);
+  // // this function takes an argument, which is the ID of the list we want to remove
+  // const handleRemoveBook = (entryListId) => {
+  //   // here we create a reference to the database 
+  //   // this time though, instead of pointing at the whole database, we make our dbRef point to the specific node of the list we want to remove
+  //   const database = getDatabase(firebase);
+  //   const dbRef = ref(database, `/${entryListId}`);
 
-    // using the Firebase method remove(), we remove the node specific to the list ID
-    remove(dbRef)
-  }
+  //   // using the Firebase method remove(), we remove the node specific to the list ID
+  //   remove(dbRef)
+  // }
+  const { food_name, nf_calories, nf_total_carbohydrate, nf_protein, nf_dietary_fiber, photo} = nutritionData
+
+  const { serving_qty, serving_unit } = commonArray
+
+  console.log("entryList", entryList)
 
   return (
     <div className="app">
-      <ul>
+      <h1>Food List</h1>
+      <h2>{food_name}</h2>
+      <div className="wrapper">
+        <div className="picture">
+          <img src={photo.thumb} />
+        </div>
+        <ul>
+          <li>
+            <p>{serving_unit} ({serving_qty})</p>
+          </li>
+          <li>
+            <p>Calories: {nf_calories}</p>
+          </li>
+          <li>
+            <p>Carbohydrates: {nf_total_carbohydrate}</p>
+          </li>
+          <li>
+            <p>Protein: {nf_protein}</p>
+          </li>
+          <li>
+            <p>Dietary Fiber: {nf_dietary_fiber}</p>
+          </li>
+        </ul>
+      </div>
+
+      {/* <ul>
+        
         {entryList.map((entryList) => {
           return (
             <li key={entryList.key}>
@@ -151,7 +191,7 @@ const App = () => {
             </li>
           )
         })}
-      </ul>
+      </ul> */}
       {/* attach the `handleSubmit` function to our input form */}
       <form onSubmit={handleSubmit}>
         <label htmlFor="newSearch">What would you like to eat?</label>
@@ -160,7 +200,6 @@ const App = () => {
           id="newSearch"
           onChange={handleInputChange}
           value={userInput}
-          placeholder="apple"
         />
 
         <button>Add</button>
