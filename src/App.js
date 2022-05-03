@@ -6,25 +6,15 @@ import { useEffect, useState } from 'react';
 // to access our database, we must import the corresponding firebase modules
 import { getDatabase, ref, onValue, push, remove } from 'firebase/database'
 
-
-//3fd684dd
-//da1f41a37b4009e916aee78562f757df
-
-
-
 const App = () => {
-
 
   const [userInput, setUserInput] = useState('');
   const [entryList, setEntryList] = useState([]);
   const [userSubmit, setUserSubmit] = useState('');
-  const [commonArray, setcommonArray] = useState({});
   const [nutritionData, setNutritionData] = useState([]);
-
+  const [errorState, setErrorState] = useState(false);
 
   useEffect(() => {
-    // console.log("userInput", userInput)
-    // console.log("userSubmit", userSubmit)
     if (userSubmit !== ''){
       axios({
         headers: {
@@ -37,9 +27,11 @@ const App = () => {
         },
       }).then(response => {
         const commonArray = response.data.common
-        setcommonArray(commonArray)
-        console.log("commonArray", commonArray)
-        // console.log("commonarray", commonArray)
+
+      if (commonArray.length === 0) {
+        throw Error ('no data found')
+      }
+        setErrorState(false)
         return axios({
           headers: {
             "x-app-id": "95ab18c0",
@@ -52,79 +44,41 @@ const App = () => {
           },
         });
       })
-
         .then((response) => {
-          // Set response to state with nutrients data
           const foodObject = response.data.foods
           setNutritionData(foodObject)
-          console.log("nutritionData", nutritionData)
           saveItemToDatabase(foodObject)
-          // console.log(foodObject)
-          // console.log("nutrition data", nutritionData)
-          // const database = getDatabase(firebase);
-          // const dbRef = ref(database);
-
-          // // // push the value of the `userInput` state to the database
-          // push(dbRef, nutritionData);
-
-
-          //   // reset the state to an empty string
-
+        })
+        .catch((error) => {
+          setErrorState(true)
         })
     }
-
   }, [userSubmit])
 
   useEffect(() => {
     const database = getDatabase(firebase)
-
     // we then create a variable that makes reference to our database
     const dbRef = ref(database)
-    
     // add an event listener to that variable that will fire
     // from the database, and call that data 'response'.
     onValue(dbRef, (response) => {
     //   // here we use Firebase's .val() method to parse our database info the way we want it
       const newState = [];
       const data = response.val();
-      console.log("data", data)
-
+      //loop to access each key and data
       for (let key in data) {
         newState.push({key: key, name: data[key]});
     }
+    // then, we call setEntryList in order to update our component's state using the local array newState
     setEntryList(newState);
-    console.log("newState", newState)
-
     })
-
-    //   // here we store the response from our query to Firebase inside of a variable called data.
-    //   // .val() is a Firebase method that gets us the information we want
-    //   const data = response.val();
-    //   // console.log("data", data)
-    //   // data is an object, so we iterate through it using a for in loop to access each list name 
-
-    //   for (let key in data) {
-    //     // newState.push(data[key]);
-    //     console.log
-    //   }
-    //   console.log("newSTate", newState)
-
-    //   // console.log("data", data)
-
-    //   // then, we call setEntryList in order to update our component's state using the local array newState
-    //   newState.reverse();
-    //   setEntryList(newState);
-    //   // console.log("entry list", entryList)
-    // });
   }, [])
 
   const saveItemToDatabase = (item) => {
     // create a variable that holds our database details
     const database = getDatabase(firebase)
-
     // we then create a variable that makes reference to our database
     const dbRef = ref(database)
-    console.log("item", item)
     const newObject = {
       photo: {
         thumb: item[0].photo.thumb
@@ -134,99 +88,62 @@ const App = () => {
       nf_total_carbohydrate: item[0].nf_total_carbohydrate,
       nf_protein: item[0].nf_protein,
       nf_dietary_fiber: item[0].nf_dietary_fiber,
+      serving_unit: item[0].serving_unit,
       tags: {
         tag_id: item[0].tags.tag_id
       }
     }
-
     push(dbRef, newObject)
-
   }
 
-
-
-  // // this event will fire every time there is a change in the input it is attached to
+  // this event will fire every time there is a change in the input it is attached to
   const handleInputChange = (event) => {
-    //   // we're telling React to update the state of our `App` component to be 
-    //   // equal to whatever is currently the value of the input field
-
-    //   //what we are typing in the search bar "every letter"
+  // we're telling React to update the state of our `App` component to be 
+  // equal to whatever is currently the value of the input field
+  //what we are typing in the search bar "every letter"
     setUserInput(event.target.value)
-
   }
-
   const handleSubmit = (event) => {
     // event.preventDefault prevents the default action (form submission and page refresh)
     event.preventDefault();
-
-    //   //usersubmit = to the value of userinput after hitting submit
+    //usersubmit = to the value of userinput after hitting submit
     setUserSubmit(userInput)
-    // console.log("userInput", userInput)
-
     // create a reference to our database
     setUserInput('');
   }
 
-
   // // this function takes an argument, which is the ID of the list we want to remove
   const handleRemoveBook = (entryListId) => {
-    //   // here we create a reference to the database 
+    // here we create a reference to the database 
     //   // this time though, instead of pointing at the whole database, we make our dbRef point to the specific node of the list we want to remove
     const database = getDatabase(firebase);
     const dbRef = ref(database, `/${entryListId}`);
-
-    // //   // using the Firebase method remove(), we remove the node specific to the list ID
+    // using the Firebase method remove(), we remove the node specific to the list ID
     remove(dbRef)
   }
-  // const { food_name, nf_calories, nf_total_carbohydrate, nf_protein, nf_dietary_fiber, serving_qty, serving_unit, photo } = nutritionData
-
-
-  // console.log("entryList", entryList)
 
   return (
     <div className="app">
       <h1>Food List</h1>
       <div className="wrapper">
-        {/* <h2>{food_name}</h2> */}
-        {/* <div className="picture">
-          <img src={photo.thumb} />
-        </div> */}
-        {/* <ul>
-          <li>
-            <p>{serving_unit} ({serving_qty})</p>
-          </li>
-          <li>
-            <p>Calories: {nf_calories}</p>
-          </li>
-          <li>
-            <p>Carbohydrates: {nf_total_carbohydrate}</p>
-          </li>
-          <li>
-            <p>Protein: {nf_protein}</p>
-          </li>
-          <li>
-            <p>Dietary Fiber: {nf_dietary_fiber}</p>
-          </li>
-        </ul> */}
         <ul className="menu">
-
           {nutritionData.map((food) => {
             return (
-              <li key={commonArray[0].tag_id}>
-                <img src={food.photo.thumb} />
-
+              <li key={food.tag_id}>
+                <img 
+                src={food.photo.thumb}
+                alt={food.serving_unit}
+                />
                 <h2>{food.food_name}</h2>
                 <p>Calories: {food.nf_calories}</p>
                 <p>Carbohydrates: {food.nf_total_carbohydrate}</p>
                 <p>Protein: {food.nf_protein}</p>
                 <p>Dietary Fiber: {food.nf_dietary_fiber}</p>
-
               </li>
             )
           })}
         </ul>
       </div>
-
       {/* attach the `handleSubmit` function to our input form */}
       <form onSubmit={(e) => {handleSubmit(e)}}>
         <label htmlFor="newSearch"></label>
@@ -236,23 +153,21 @@ const App = () => {
           onChange={(e) => {handleInputChange(e)}}
           value={userInput}
         />
-
         <button>Add</button>
-
+        {errorState ? <p>no data found</p> : null}
       </form>
       <ul className="storedInfo">
-
         {entryList.map((food) => {
           return (
-            <li key={food.name.key} className="storedList">
-              <img src={food.name.photo.thumb} />
-
+            <li key={food.key} className="storedList">
+              <img 
+              src={food.name.photo.thumb}
+              alt={food.name.serving_unit} />
               <h2>{food.name.food_name}</h2>
               <p>Calories: {food.name.nf_calories}</p>
               <p>Carbohydrates: {food.name.nf_total_carbohydrate}</p>
               <p>Protein: {food.name.nf_protein}</p>
               <p>Dietary Fiber: {food.name.nf_dietary_fiber}</p>
-
               <button onClick={() => handleRemoveBook(food.key)} className="removeButton" > Remove </button>
             </li>
           )
