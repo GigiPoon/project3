@@ -4,12 +4,13 @@ import React from 'react';
 import './App.css';
 import { useEffect, useState } from 'react';
 // to access our database, we must import the corresponding firebase modules
-import { getDatabase, ref, onValue, push, remove } from 'firebase/database'
+import { getDatabase, ref, push } from 'firebase/database'
+import EntryListData from "./components/EntryListData";
 
 const App = () => {
 
   const [userInput, setUserInput] = useState('');
-  const [entryList, setEntryList] = useState([]);
+  // const [entryList, setEntryList] = useState([]);
   const [userSubmit, setUserSubmit] = useState('');
   const [nutritionData, setNutritionData] = useState([]);
   const [errorState, setErrorState] = useState(false);
@@ -18,8 +19,8 @@ const App = () => {
     if (userSubmit !== ''){
       axios({
         headers: {
-          "x-app-id": "95ab18c0",
-          "x-app-key": "df053117dc540f359b77109f77c17c45",
+          "x-app-id": "8f7e1a0a",
+          "x-app-key": "0bc92fd2b2bbd2ed314204494ce73a34",
         },
         url: `https://trackapi.nutritionix.com/v2/search/instant`,
         params: {
@@ -34,8 +35,8 @@ const App = () => {
         setErrorState(false)
         return axios({
           headers: {
-            "x-app-id": "95ab18c0",
-            "x-app-key": "df053117dc540f359b77109f77c17c45",
+            "x-app-id": "8f7e1a0a",
+            "x-app-key": "0bc92fd2b2bbd2ed314204494ce73a34",
           },
           method: "POST",
           url: `https://trackapi.nutritionix.com/v2/natural/nutrients`,
@@ -55,30 +56,32 @@ const App = () => {
     }
   }, [userSubmit])
 
-  useEffect(() => {
-    const database = getDatabase(firebase)
-    // we then create a variable that makes reference to our database
-    const dbRef = ref(database)
-    // add an event listener to that variable that will fire
-    // from the database, and call that data 'response'.
-    onValue(dbRef, (response) => {
-    //   // here we use Firebase's .val() method to parse our database info the way we want it
-      const newState = [];
-      const data = response.val();
-      //loop to access each key and data
-      for (let key in data) {
-        newState.push({key: key, name: data[key]});
-    }
-    // then, we call setEntryList in order to update our component's state using the local array newState
-    setEntryList(newState);
-    })
-  }, [])
+  // useEffect(() => {
+  //   const database = getDatabase(firebase)
+  //   // we then create a variable that makes reference to our database
+  //   const dbRef = ref(database)
+  //   // add an event listener to that variable that will fire
+  //   // from the database, and call that data 'response'.
+  //   onValue(dbRef, (response) => {
+  //   //   // here we use Firebase's .val() method to parse our database info the way we want it
+  //     const newState = [];
+  //     const data = response.val();
+  //     //loop to access each key and data
+  //     for (let key in data) {
+  //       newState.push({key: key, name: data[key]});
+  //   }
+  //   // then, we call setEntryList in order to update our component's state using the local array newState
+  //   setEntryList(newState);
+  //   })
+  // }, [])
 
   const saveItemToDatabase = (item) => {
     // create a variable that holds our database details
     const database = getDatabase(firebase)
     // we then create a variable that makes reference to our database
     const dbRef = ref(database)
+
+    //create a variable to hold all the data needed to be stored in firebase
     const newObject = {
       photo: {
         thumb: item[0].photo.thumb
@@ -100,7 +103,6 @@ const App = () => {
   const handleInputChange = (event) => {
   // we're telling React to update the state of our `App` component to be 
   // equal to whatever is currently the value of the input field
-  //what we are typing in the search bar "every letter"
     setUserInput(event.target.value)
   }
   const handleSubmit = (event) => {
@@ -108,19 +110,19 @@ const App = () => {
     event.preventDefault();
     //usersubmit = to the value of userinput after hitting submit
     setUserSubmit(userInput)
-    // create a reference to our database
+    // setUserInput back to nothing after submitting
     setUserInput('');
   }
 
-  // // this function takes an argument, which is the ID of the list we want to remove
-  const handleRemoveBook = (entryListId) => {
-    // here we create a reference to the database 
-    //   // this time though, instead of pointing at the whole database, we make our dbRef point to the specific node of the list we want to remove
-    const database = getDatabase(firebase);
-    const dbRef = ref(database, `/${entryListId}`);
-    // using the Firebase method remove(), we remove the node specific to the list ID
-    remove(dbRef)
-  }
+  // // // this function takes an argument, which is the ID of the list we want to remove
+  // const handleRemoveBook = (entryListId) => {
+  //   // here we create a reference to the database 
+  //   //   // this time though, instead of pointing at the whole database, we make our dbRef point to the specific node of the list we want to remove
+  //   const database = getDatabase(firebase);
+  //   const dbRef = ref(database, `/${entryListId}`);
+  //   // using the Firebase method remove(), we remove the node specific to the list ID
+  //   remove(dbRef)
+  // }
 
   return (
     <div className="app">
@@ -156,7 +158,9 @@ const App = () => {
         <button>Add</button>
         {errorState ? <p>no data found</p> : null}
       </form>
-      <ul className="storedInfo">
+      {/* passed in a component of EntryListData */}
+      <EntryListData />
+      {/* <ul className="storedInfo">
         {entryList.map((food) => {
           return (
             <li key={food.key} className="storedList">
@@ -172,7 +176,7 @@ const App = () => {
             </li>
           )
         })}
-      </ul>
+      </ul> */}
     </div>
   );
 };
