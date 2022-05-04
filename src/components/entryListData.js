@@ -5,6 +5,7 @@ import firebase from '../firebase';
 
 const EntryListData = () => {
 
+
     const [entryList, setEntryList] = useState([]);
 
     useEffect(() => {
@@ -14,7 +15,8 @@ const EntryListData = () => {
         // add an event listener to that variable that will fire
         // from the database, and call that data 'response'.
         onValue(dbRef, (response) => {
-            //   // here we use Firebase's .val() method to parse our database info the way we want it
+            // here we use Firebase's .val() method to parse our database info the way we want it
+            //creating an array to hold the .map unique Key and data
             const newState = [];
             const data = response.val();
             //loop to access each key and data
@@ -26,10 +28,11 @@ const EntryListData = () => {
         })
     }, [])
 
-    // // this function takes an argument, which is the ID of the list we want to remove
+
+    // this function takes an argument, which is the ID of the list we want to remove
     const handleRemoveBook = (entryListId) => {
         // here we create a reference to the database 
-        //   // this time though, instead of pointing at the whole database, we make our dbRef point to the specific node of the list we want to remove
+        // this time though, instead of pointing at the whole database, we make our dbRef point to the specific node of the list we want to remove
         const database = getDatabase(firebase);
         const dbRef = ref(database, `/${entryListId}`);
         // using the Firebase method remove(), we remove the node specific to the list ID
