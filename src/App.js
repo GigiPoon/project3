@@ -11,7 +11,7 @@ import firebase from "./firebase";
 //components
 import Form from "./components/Form";
 import NutritionData from "./components/NutritionData";
-import EntryListData from './components/EntryListData';
+import EntryData from './components/EntryData';
 
 const App = () => {
   const [userSubmit, setUserSubmit] = useState('');
@@ -91,7 +91,7 @@ const App = () => {
       <h1>Food List</h1>
       <NutritionData nutritionData={nutritionData} />
       <Form errorState={errorState} setUserSubmit={setUserSubmit}   />
-      <EntryListData />
+      <EntryData />
 
     </div>
   );
