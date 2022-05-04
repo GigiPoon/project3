@@ -29,7 +29,7 @@ const Form = (props) => {
                 value={userInput}
             />
             <button>Add</button>
-            {props.errorState ? <p>no data found</p> : null}
+            {props.errorState ? <p className='errP'>no data found</p> : null}
         </form>
     )
 }
