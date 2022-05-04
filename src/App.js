@@ -9,9 +9,9 @@ import { useEffect, useState } from 'react';
 import { getDatabase, ref, push } from 'firebase/database'
 import firebase from "./firebase";
 //components
-import EntryListData from "./components/EntryListData";
 import Form from "./components/Form";
 import NutritionData from "./components/NutritionData";
+import EntryListData from './components/EntryListData';
 
 const App = () => {
   const [userSubmit, setUserSubmit] = useState('');
