@@ -14,7 +14,6 @@ import Form from "./components/Form";
 import NutritionData from "./components/NutritionData";
 
 const App = () => {
-
   const [userSubmit, setUserSubmit] = useState('');
   const [nutritionData, setNutritionData] = useState([]);
   const [errorState, setErrorState] = useState(false);
@@ -60,6 +59,8 @@ const App = () => {
     }
   }, [userSubmit])
 
+
+
   const saveItemToDatabase = (item) => {
     //item = foodObject (api response)
     // create a variable that holds our database details
@@ -91,6 +92,7 @@ const App = () => {
       <NutritionData nutritionData={nutritionData} />
       <Form errorState={errorState} setUserSubmit={setUserSubmit}   />
       <EntryListData />
+
     </div>
   );
 };
