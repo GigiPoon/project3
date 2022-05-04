@@ -3,7 +3,7 @@ import { getDatabase, ref, onValue, remove } from 'firebase/database'
 import firebase from '../firebase';
 
 
-const EntryListData = () => {
+const EntryData = () => {
 
 
     const [entryList, setEntryList] = useState([]);
@@ -60,4 +60,4 @@ const EntryListData = () => {
     )
 }
 
-export default EntryListData;
+export default EntryData;
