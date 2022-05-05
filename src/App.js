@@ -88,11 +88,12 @@ const App = () => {
 
   return (
     <div className="app">
-      <h1>Food List</h1>
+      <h1>Food Dairy</h1>
+      <h4>Take control of your goals</h4>
       <NutritionData nutritionData={nutritionData} />
-      <Form errorState={errorState} setUserSubmit={setUserSubmit}   />
+      <Form errorState={errorState} setUserSubmit={setUserSubmit} />
+      <p>Created at Juno College 2022 by Gigi Poon | API Data by Nutritionix</p>
       <EntryData />
-
     </div>
   );
 };
