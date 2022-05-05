@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const Form = (props) => {
+const Form = ({errorState, setUserSubmit}) => {
 
     const [userInput, setUserInput] = useState('');
 
@@ -14,7 +14,7 @@ const Form = (props) => {
         // event.preventDefault prevents the default action (form submission and page refresh)
         event.preventDefault();
         //usersubmit = to the value of userinput after hitting submit
-        props.setUserSubmit(userInput)
+        setUserSubmit(userInput)
         // setUserInput back to nothing after submitting
         setUserInput('');
     }
@@ -29,7 +29,7 @@ const Form = (props) => {
                 value={userInput}
             />
             <button>Add</button>
-            {props.errorState ? <p className='errP'>no data found</p> : null}
+            {errorState ? <p className='errP'>no data found</p> : null}
         </form>
     )
 }

@@ -6,10 +6,12 @@ const NutritionData = (props) => {
                 {props.nutritionData.map((food) => {
                     return (
                         <li key={food.tag_id}>
-                            <img
-                                src={food.photo.thumb}
-                                alt={food.serving_unit}
-                            />
+                            <div className="img">
+                                <img
+                                    src={food.photo.thumb}
+                                    alt={food.serving_unit}
+                                />
+                            </div>
                             <h2>{food.food_name}</h2>
                             <p>Calories: {food.nf_calories}</p>
                             <p>Carbohydrates: {food.nf_total_carbohydrate}</p>

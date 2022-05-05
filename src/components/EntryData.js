@@ -44,9 +44,12 @@ const EntryData = () => {
             {entryList.map((food) => {
                 return (
                     <li key={food.key} className="storedList">
-                        <img
-                            src={food.name.photo.thumb}
-                            alt={food.name.serving_unit} />
+                        <div className="imgList">
+                            <img
+                                src={food.name.photo.thumb}
+                                alt={food.name.serving_unit} 
+                            />
+                        </div>
                         <h2>{food.name.food_name}</h2>
                         <p>Calories: {food.name.nf_calories}</p>
                         <p>Carbohydrates: {food.name.nf_total_carbohydrate}</p>
