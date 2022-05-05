@@ -25,7 +25,7 @@ h1 {
   font-size: 7rem;
   color: white;
   font-family: 'Cookie', cursive;
-  margin-bottom: -20px;
+  margin-bottom: 0px;
   letter-spacing: 3px;
   font-weight: lighter;
 
@@ -157,9 +157,10 @@ h4 {
   color: white;
   text-align: center;
   margin: 0 auto;
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: lighter;
+  line-height: 30px;
 
 }
 
@@ -210,5 +211,9 @@ h4 {
   h1 {
     line-height: 100px;
     margin-bottom: 10px;
+  }
+  
+  .wrapper {
+    width: 100%;
   }
 }
