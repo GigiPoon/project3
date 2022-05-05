@@ -22,8 +22,8 @@ const App = () => {
     if (userSubmit !== ''){
       axios({
         headers: {
-          "x-app-id": "8f7e1a0a",
-          "x-app-key": "0bc92fd2b2bbd2ed314204494ce73a34",
+          "x-app-id": "b15c8d93",
+          "x-app-key": "b10716e819e0728a28fb6c5a8021360c",
         },
         url: `https://trackapi.nutritionix.com/v2/search/instant`,
         params: {
@@ -38,8 +38,8 @@ const App = () => {
         setErrorState(false)
         return axios({
           headers: {
-            "x-app-id": "8f7e1a0a",
-            "x-app-key": "0bc92fd2b2bbd2ed314204494ce73a34",
+            "x-app-id": "b15c8d93",
+            "x-app-key": "b10716e819e0728a28fb6c5a8021360c",
           },
           method: "POST",
           url: `https://trackapi.nutritionix.com/v2/natural/nutrients`,
